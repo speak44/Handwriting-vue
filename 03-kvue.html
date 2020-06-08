@@ -9,10 +9,13 @@
 </head>
 <body>
   <div id="app">
-    ??
+    <!-- ?? -->
     <!--  compiler(el) el.childNodes -->
     <p>{{counter}}</p>
-    是吗？
+    <p k-text="counter"></p>
+    k-html 解析为innerhtml
+    <p k-html="desc"></p>
+    <!-- 是吗？ -->
     
 </div>
   <script src="./kvue.js"></script>
@@ -20,7 +23,9 @@
     const app = new KVue({
       el:'#app',
       data: {
-counter: 1 },
+        counter: 1,
+        desc:'<span style="color:red">实现vue初始化的k-html</span>'
+      },
     })
     setInterval(() => {
       // app.counter++

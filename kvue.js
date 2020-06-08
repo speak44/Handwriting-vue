@@ -103,19 +103,54 @@ class Compiler {
   //   <p>{{counter}}</p>
   //   </div>
   compiler(el){
-    console.log( el.childNodes, ' el.childNodes')
+    // console.log( el.childNodes, ' el.childNodes')
     el.childNodes.forEach(node =>{
       //是否是元素
       if(node.nodeType === 1){
         console.log('元素', node.nodeName)
+        this.compileHtml(node)
       }else if(this.isIner(node)){ //插值，双括号{{}}
         console.log('编译文本', node.textContent)
+        this.compileText(node)
       }
       // 递归，根元素 里面还有子元素
         if(node.childNodes){
           this.compiler(node)
         }
     })
+  }
+  // 解析绑定 插值表达式 例如：{{counter}} 解析之后， 页面显示 1 
+  compileText(node){
+    // console.log(RegExp)  RegExp.$1 正则表达式的$1 是返回的内容
+    // console.log(this.$vm, 'this.$vm') // 当前kvue实例
+    node.textContent =this.$vm[RegExp.$1] // 拿出来的值转化后进行替换，node.textContent
+    // 相当于完成了初始化
+  }
+  // 编译元素 html元素
+  compileHtml(node){
+  // 处理元素上的属性 如：@- k-（如果是vue的化是，v-；目前写的是自己的模拟kvue；所以开头都是k-）
+    // console.log(node.attributes,'node')
+    const attrs =node.attributes
+    console.log(attrs,'attrs')
+    Array.from(attrs).forEach(item =>{
+      // console.log(item, 'item')
+      const attrName = item.nodeName // v-text
+      const exp = item.value // counter
+      if(attrName.indexOf('k-')===0){ // 判断是否是k- 开头的指令
+        // 截取到 k- 后面的指令是什么。
+        const dir = attrName.substring(2) // text
+        // this[dir]==text 就调用text(node,exp)这个方法 看是否有对应的方法 有则执行
+        this[dir]&&this[dir](node,exp)
+      }
+    })
+  }
+  // k-text的处理
+  text(node, exp){
+    node.textContent =this.$vm[exp] // 找到这个vue实例的couter
+  }
+  // k-html 的处理
+  html(node, exp){
+    node.innerHTML = this.$vm[exp]
   }
   // 文本节点 {{111222}}
   isIner(node){
