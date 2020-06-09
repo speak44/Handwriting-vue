@@ -11,7 +11,7 @@
   <div id="app">
     <!-- ?? -->
     <!--  compiler(el) el.childNodes -->
-    <p>{{counter}}</p>
+    <p @click="add">{{counter}}</p>
     <p k-text="counter"></p>
     k-html 解析为innerhtml
     <p k-html="desc"></p>
@@ -26,11 +26,17 @@
         counter: 1,
         desc:'<span style="color:red">实现vue初始化的k-html</span>'
       },
+      methods:{
+        add(){
+          console.log(this)
+          this.counter++
+        }
+      }
     })
-    setInterval(() => {
-      // app.counter++
-      // app.$data.counter++
-    }, 1000);
+    // setInterval(() => {
+    //   app.counter++
+    //   // app.$data.counter++
+    // }, 1000);
   </script>
 </body>
 </html>

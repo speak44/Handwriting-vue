@@ -142,6 +142,16 @@ class Compiler {
         // this[dir]==text 就调用text(node,exp)这个方法 看是否有对应的方法 有则执行
         this[dir]&&this[dir](node,exp)
       }
+      if(attrName.indexOf('@')===0){
+        // console.log(dir,'dir')
+        // console.log(this.$vm.$options.methods,'thisadd')
+        const fn = this.$vm.$options.methods
+        const dir = attrName.substring(1) // text
+        const _this =this.$vm
+        node.addEventListener(dir,function () {
+          return fn[exp].call(_this)
+        })
+      }
     })
   }
   // k-text的处理
@@ -152,8 +162,32 @@ class Compiler {
   html(node, exp){
     node.innerHTML = this.$vm[exp]
   }
+  // 点击事件处理
+  // click(node, exp){
+  //   console.log(node,'click')
+  // }
   // 文本节点 {{111222}}
   isIner(node){
     return node.nodeType === 3 && /\{\{(.*)\}\}/.test(node.textContent)
   }
+}
+
+//依赖收集：
+// 视图中：<p>{{counter}}</p> ，在'{{}}' 里面写的是 data中的key值，称为依赖；同一个key出现多次，每次都需要被收集起来，
+// 用一个watcher 来进行维护。此过程被称为依赖收集
+// <p>{{counter1}}</p>
+// <p>{{counter2}}</p>
+// <p>{{counter1}}</p>
+// 以上内容就可以得知，会出现三个watcher（观察者）；
+// 多个warcher 需要一个Dep来进行管理，需要更新时，由Dep统一通知。
+// 页面出现多少次key 就会有多少watcher； 而data中由几个key 就会有几个Dep
+// watcher 往 Dep 添加订阅者
+// Dep 往 watcher 通知改变  watcher去更改视图
+
+class watcher{
+
+}
+
+class Dep{
+
 }
